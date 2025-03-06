@@ -1,9 +1,11 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState } from "react";
+import Location from "../components/Location";
+import Camera from "../components/Camera";
 
 // Definir la base de datos y el store
-const DB_NAME = 'HospitalDB';
+const DB_NAME = "HospitalDB";
 const DB_VERSION = 8; // Incrementa la versión si es necesario
-const STORE_NAME = 'patientVisits';
+const STORE_NAME = "patientVisits";
 
 // Crear o abrir la base de datos
 const openDatabase = () => {
@@ -14,23 +16,28 @@ const openDatabase = () => {
     request.onupgradeneeded = (event) => {
       const db = event.target.result;
       if (!db.objectStoreNames.contains(STORE_NAME)) {
-        const objectStore = db.createObjectStore(STORE_NAME, { keyPath: 'id', autoIncrement: true });
-        objectStore.createIndex('name', 'name', { unique: false });
-        objectStore.createIndex('medicalHistory', 'medicalHistory', { unique: false });
-        objectStore.createIndex('lastVisit', 'lastVisit', { unique: false });
-        console.log('Object store creado correctamente');
+        const objectStore = db.createObjectStore(STORE_NAME, {
+          keyPath: "id",
+          autoIncrement: true,
+        });
+        objectStore.createIndex("name", "name", { unique: false });
+        objectStore.createIndex("medicalHistory", "medicalHistory", {
+          unique: false,
+        });
+        objectStore.createIndex("lastVisit", "lastVisit", { unique: false });
+        console.log("Object store creado correctamente");
       } else {
-        console.log('Object store ya existe');
+        console.log("Object store ya existe");
       }
     };
 
     request.onsuccess = () => {
-      console.log('Base de datos abierta correctamente');
+      console.log("Base de datos abierta correctamente");
       resolve(request.result);
     };
 
     request.onerror = (event) => {
-      console.error('Error al abrir la base de datos:', event.target.error);
+      console.error("Error al abrir la base de datos:", event.target.error);
       reject(event.target.error);
     };
   });
@@ -40,16 +47,16 @@ const openDatabase = () => {
 const savePatientVisit = async (patientData) => {
   try {
     const db = await openDatabase();
-    const transaction = db.transaction(STORE_NAME, 'readwrite');
+    const transaction = db.transaction(STORE_NAME, "readwrite");
     const store = transaction.objectStore(STORE_NAME);
     store.add(patientData);
 
     return new Promise((resolve, reject) => {
-      transaction.oncomplete = () => resolve('Registro guardado correctamente');
+      transaction.oncomplete = () => resolve("Registro guardado correctamente");
       transaction.onerror = (event) => reject(event.target.error);
     });
   } catch (error) {
-    console.error('Error guardando el registro en IndexedDB:', error);
+    console.error("Error guardando el registro en IndexedDB:", error);
   }
 };
 
@@ -60,7 +67,7 @@ const getPatientVisits = async () => {
 
     request.onsuccess = async () => {
       const db = request.result;
-      const transaction = db.transaction(STORE_NAME, 'readonly');
+      const transaction = db.transaction(STORE_NAME, "readonly");
       const store = transaction.objectStore(STORE_NAME);
       const allVisitsRequest = store.getAll();
 
@@ -75,7 +82,11 @@ const getPatientVisits = async () => {
 // Componente principal
 export function PatientRecords() {
   const [patients, setPatients] = useState([]); // Para almacenar los pacientes
-  const [newPatient, setNewPatient] = useState({ name: '', medicalHistory: '', lastVisit: '' });
+  const [newPatient, setNewPatient] = useState({
+    name: "",
+    medicalHistory: "",
+    lastVisit: "",
+  });
 
   // Cargar pacientes al cargar el componente
   useEffect(() => {
@@ -94,13 +105,13 @@ export function PatientRecords() {
       await savePatientVisit(newPatient);
 
       // Limpiar los campos del formulario
-      setNewPatient({ name: '', medicalHistory: '', lastVisit: '' });
+      setNewPatient({ name: "", medicalHistory: "", lastVisit: "" });
 
       // Recargar los pacientes
       const updatedVisits = await getPatientVisits();
       setPatients(updatedVisits);
     } else {
-      alert('Por favor completa todos los campos');
+      alert("Por favor completa todos los campos");
     }
   };
 
@@ -108,7 +119,7 @@ export function PatientRecords() {
     <div>
       <h1>Registros de Pacientes</h1>
       <p>Esta página solo es accesible para administradores</p>
-      
+
       {/* Mostrar la tabla de pacientes */}
       <table>
         <thead>
@@ -136,23 +147,31 @@ export function PatientRecords() {
           type="text"
           placeholder="Nombre del paciente"
           value={newPatient.name}
-          onChange={(e) => setNewPatient({ ...newPatient, name: e.target.value })}
+          onChange={(e) =>
+            setNewPatient({ ...newPatient, name: e.target.value })
+          }
           required
         />
         <input
           type="text"
           placeholder="Historial médico"
           value={newPatient.medicalHistory}
-          onChange={(e) => setNewPatient({ ...newPatient, medicalHistory: e.target.value })}
+          onChange={(e) =>
+            setNewPatient({ ...newPatient, medicalHistory: e.target.value })
+          }
           required
         />
         <input
           type="date"
           placeholder="Última consulta"
           value={newPatient.lastVisit}
-          onChange={(e) => setNewPatient({ ...newPatient, lastVisit: e.target.value })}
+          onChange={(e) =>
+            setNewPatient({ ...newPatient, lastVisit: e.target.value })
+          }
           required
         />
+        <Camera />
+        <Location />
         <button type="submit">Registrar Visita</button>
       </form>
     </div>
