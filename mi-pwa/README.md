@@ -18,6 +18,10 @@ Para iniciar sesión usar uno de los siguientes usuarios:
   - Contraseña: doctor456
 
 # Preguntas
+## 1. Creación del Manifiesto y Configuración Inicial
+El manifiesto se encuentra en `public/manifest.json`
+y los íconos en `public/icons`
+
 ## 3. Acceso a Periféricos del Sistema Operativo
 Los componentes de camara y geolocalización se pueden en contrar en `src/components/Camera.jsx` y `src/components/Location.jsx`.
 
