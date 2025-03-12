@@ -42,16 +42,18 @@ export function Login() {
       <h2>Inicio de Sesión</h2>
       <form onSubmit={handleSubmit}>
         <div>
-          <label>Usuario:</label>
+          <label htmlFor="usuario">Usuario:</label>
           <input
+            id='usuario'
             type="text"
             value={username}
             onChange={(e) => setUsername(e.target.value)}
           />
         </div>
         <div>
-          <label>Contraseña:</label>
+          <label htmlFor="contraseña">Contraseña:</label>
           <input
+            id='contraseña'
             type="password"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
@@ -62,7 +64,7 @@ export function Login() {
       <p>___________________________________</p>
       <p>___________________________________</p>
       <p>Registros de Ingresos</p>
-      <pre style={{ background: '#555555', padding: '10px', borderRadius: '5px' }}>
+      <pre style={{ background: 'aliceblue', padding: '10px', borderRadius: '5px' }}>
         {getLoginLogsAsString() || "No hay registros de ingreso disponibles."}
       </pre>
     </div>
